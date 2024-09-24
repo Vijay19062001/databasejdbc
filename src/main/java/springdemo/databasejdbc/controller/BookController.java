@@ -5,9 +5,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import springdemo.databasejdbc.entities.Book;
+import springdemo.databasejdbc.exception.basicexception.BasicValidationException;
 import springdemo.databasejdbc.model.BookModel;
 import springdemo.databasejdbc.service.servicesimpl.BookService;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -37,15 +39,26 @@ public class BookController {
 
     // Create a new book
     @PostMapping("/add")
-    public ResponseEntity<BookModel> createBook(@RequestBody BookModel bookModel) {
-        BookModel createdBook = bookService.createBook(bookModel);
-        return new ResponseEntity<>(createdBook, HttpStatus.CREATED);
-    }
+    public ResponseEntity<BookModel> createBook(@RequestBody BookModel bookModel) throws BasicValidationException {
+
+            bookModel.validate();
+
+//            bookModel.setCreatedDate(String.valueOf(LocalDateTime.now()));  // Set creation date
+//            bookModel.setUpdatedDate(String.valueOf(LocalDateTime.now()));  // Set updated date
+            BookModel createdBook = bookService.createBook(bookModel);
+            return new ResponseEntity<>(createdBook, HttpStatus.CREATED);
+        }
+
+
 
     // Update an existing book by ID
     @PutMapping("/update/{id}")
-    public ResponseEntity<BookModel> updateBook(@PathVariable Long id, @RequestBody Book bookModel) {
-        BookModel updatedBook = bookService.updateBook(id, bookModel);
+    public ResponseEntity<BookModel> updateBook(@PathVariable Long id, @RequestBody BookModel bookModel,Book book)  {
+        // Validate the updated book data
+        bookModel.validate();
+
+        // Update the book information
+        BookModel updatedBook = bookService.updateBook(id, book);
         if (updatedBook != null) {
             return new ResponseEntity<>(updatedBook, HttpStatus.OK);
         } else {
