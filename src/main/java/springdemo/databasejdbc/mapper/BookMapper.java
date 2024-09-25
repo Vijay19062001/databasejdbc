@@ -7,8 +7,10 @@ import springdemo.databasejdbc.enums.BookStatus;
 import springdemo.databasejdbc.exception.InvalidDateFormatException;
 import springdemo.databasejdbc.utils.DateUtils;
 
+
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+import java.time.Month;
+
 
 @Component
 public class BookMapper {
@@ -21,15 +23,15 @@ public class BookMapper {
         book.setAuthor(bookModel.getAuthor());
 
         // publishDate from String to LocalDate
-        LocalDate publishDate = DateUtils.stringToLocalDate(bookModel.getPublishDate());
-        book.setPublishDate(publishDate);
+        LocalDate publishDate = DateUtils.stringToLocalDate(String.valueOf(bookModel.getPublishDate()));
+        book.setPublishDate(LocalDate.parse(String.valueOf(publishDate)));
 
-        book.setPublishDate(LocalDate.from(publishDate));
+        book.setPublishDate(LocalDate.parse(String.valueOf(LocalDate.from(publishDate))));
         book.setPrices(Double.valueOf(bookModel.getPrices()));
         book.setPublisherCompany(bookModel.getPublisherCompany());
 
 
-        book.setPublishMonth(book.getPublishMonth());
+        book.setPublishMonth(bookModel.getPublishMonth());
         // Set status based on the book model input
         book.setStatus(BookStatus.valueOf(bookModel.getStatus().toUpperCase()));
 
@@ -47,9 +49,9 @@ public class BookMapper {
 
         bookModel.setPublisherCompany(book.getPublisherCompany());
 
-        // Set status as String
         bookModel.setStatus(book.getStatus().toString());
 
+        bookModel.setPublishMonth(String.valueOf(book.getPublishMonth()));
 
         return bookModel;
     }

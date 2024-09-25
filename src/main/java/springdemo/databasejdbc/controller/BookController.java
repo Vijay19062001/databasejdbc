@@ -1,79 +1,81 @@
 package springdemo.databasejdbc.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import springdemo.databasejdbc.entities.Book;
 import springdemo.databasejdbc.exception.basicexception.BasicValidationException;
+import springdemo.databasejdbc.exception.basicexception.BookNotFoundException;
 import springdemo.databasejdbc.model.BookModel;
+import springdemo.databasejdbc.exception.basicexception.GlobalExceptionHandler;
 import springdemo.databasejdbc.service.servicesimpl.BookService;
+import springdemo.databasejdbc.exception.InvalidDateFormatException;
+import springdemo.databasejdbc.repository.BookRepository;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/book")
+@Validated
 public class BookController {
 
     @Autowired
     private BookService bookService;
 
-    // Get all books
     @GetMapping("/all")
-    public ResponseEntity<List<BookModel>> getAllBooks() {
-        List<BookModel> books = bookService.getAllBooks();
-        return new ResponseEntity<>(books, HttpStatus.OK);
+    @ResponseStatus(HttpStatus.OK)
+    public List<BookModel> getAllBooks() {
+        return bookService.getAllBooks(); // Return list of books directly
     }
 
-    // Get a book by ID
     @GetMapping("/{id}")
-    public ResponseEntity<BookModel> getBookById(@PathVariable Long id) {
+    @ResponseStatus(HttpStatus.OK)
+    public BookModel getBookById(@PathVariable Long id) {
         BookModel book = bookService.getBookById(id);
-        if (book != null) {
-            return new ResponseEntity<>(book, HttpStatus.OK);  // Return OK status
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        if (book == null) {
+
+            throw new BookNotFoundException("Books with id " + id + " not founds");
         }
+        return book;
     }
 
-    // Create a new book
     @PostMapping("/add")
-    public ResponseEntity<BookModel> createBook(@RequestBody BookModel bookModel) throws BasicValidationException {
+    @ResponseStatus(HttpStatus.CREATED) // Set status to 201 Created
+    public @ResponseBody BookModel createBook(@Valid @RequestBody BookModel bookModel) throws BasicValidationException {
 
-            bookModel.validate();
+        return bookService.createBook(bookModel);
 
-//            bookModel.setCreatedDate(String.valueOf(LocalDateTime.now()));  // Set creation date
-//            bookModel.setUpdatedDate(String.valueOf(LocalDateTime.now()));  // Set updated date
-            BookModel createdBook = bookService.createBook(bookModel);
-            return new ResponseEntity<>(createdBook, HttpStatus.CREATED);
-        }
-
+    }
 
 
     // Update an existing book by ID
     @PutMapping("/update/{id}")
-    public ResponseEntity<BookModel> updateBook(@PathVariable Long id, @RequestBody BookModel bookModel,Book book)  {
-        // Validate the updated book data
-        bookModel.validate();
+    @ResponseStatus(HttpStatus.OK) // Set status to 200 OK for successful updates
+    public BookModel updateBook(@PathVariable Long id, @Valid @RequestBody BookModel bookModel) throws BasicValidationException {
 
-        // Update the book information
-        BookModel updatedBook = bookService.updateBook(id, book);
-        if (updatedBook != null) {
-            return new ResponseEntity<>(updatedBook, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        BookModel updatedBook = bookService.updateBook(id, bookModel);
+
+        // If the book is not found, throw an exception
+        if (updatedBook == null) {
+            throw new BookNotFoundException("Book with id " + id + " not found");
         }
+        // Return the updated book (with 200 OK status)
+        return updatedBook;
+
     }
 
     // Delete a book by ID
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> deleteBook(@PathVariable Long id) {
-        if (bookService.getBookById(id) != null) {
-            bookService.deleteBook(id);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteBook(@PathVariable Long id) {
+        BookModel book = bookService.getBookById(id);
+
+        if (book == null) {
+            throw new BookNotFoundException("Book with id " + id + " not found");
         }
+
+        bookService.deleteBook(id);
     }
 }

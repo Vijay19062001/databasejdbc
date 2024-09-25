@@ -5,11 +5,13 @@ import org.springframework.stereotype.Service;
 //import springdemo.databasejdbc.model.BookModel;
 
 import springdemo.databasejdbc.entities.Book;
+import springdemo.databasejdbc.exception.basicexception.BookNotFoundException;
 import springdemo.databasejdbc.mapper.BookMapper;
 import springdemo.databasejdbc.model.BookModel;
 import springdemo.databasejdbc.repository.BookRepository;
 import springdemo.databasejdbc.service.ServiceBook;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -47,21 +49,21 @@ public class BookService implements ServiceBook {
     }
 
     @Override
-    public BookModel updateBook(Long id, Book updatedBook) {
-        Book book = bookRepository.findById(id).orElse(null);
-        if (book != null) {
-            book.setBookName(updatedBook.getBookName());
-            book.setAuthor(updatedBook.getAuthor());
-            book.setPublishDate(updatedBook.getPublishDate());
-            book.setPrices(updatedBook.getPrices());
-            book.setPublisherCompany(updatedBook.getPublisherCompany());
+    public BookModel updateBook(Long id, BookModel bookModel) {
+        Book book = bookRepository.findById(id)
+                .orElseThrow(() -> new BookNotFoundException("Book with id " + id + " not found"));
+
+            book.setBookName(bookModel.getBookName());
+            book.setAuthor(bookModel.getAuthor());
+            book.setPublishDate(LocalDate.parse(bookModel.getPublishDate()));
+            book.setPrices(Double.valueOf(bookModel.getPrices()));
+            book.setPublisherCompany(bookModel.getPublisherCompany());
 
 
             Book updatesBook = bookRepository.save(book);
 
             return bookMapper.toModel(updatesBook);
-        }
-        return null;
+
     }
 
     @Override

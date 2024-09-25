@@ -13,6 +13,6 @@ public interface ServiceBook {
 
    public BookModel createBook(BookModel bookModel);
 
-    public BookModel updateBook(Long id, Book updatedBook);
+    public BookModel updateBook(Long id, BookModel bookModel);
     public void deleteBook(Long id);
 }

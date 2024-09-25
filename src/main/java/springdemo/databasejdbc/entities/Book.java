@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import java.time.LocalDate;
 
 
+
 import springdemo.databasejdbc.enums.BookStatus;
 
 @Entity
@@ -36,8 +37,9 @@ public class Book {
     @Column(name = "status")
     private BookStatus status;
 
+
     @Transient
-    public Integer publishMonth;        // To store the publish month, transient so it's not stored in the DB
+    public  String publishMonth;        // To store the month, transient so it's not stored in the DB
 
     // Constructors, getters, and setters
     public Book() {}
@@ -76,7 +78,7 @@ public class Book {
         this.publishDate = publishDate;
     }
 
-    public double getPrices() {
+    public Double getPrices() {
         return prices;
     }
 
@@ -100,14 +102,22 @@ public class Book {
         this.status = status;
     }
 
-    public void setPublishMonth(Integer publishMonth) {
+
+    public void setPublishMonth( String publishMonth){
+
         this.publishMonth = publishMonth;
     }
 
-
+    @Transient
     public int getPublishMonth() {
-        // Convert publishDate to LocalDate and extract the month
-        return this.publishDate.getMonthValue();
+
+        if (publishDate != null) {
+            return publishDate.getMonthValue(); // Returns the month as a Month enum (e.g., JANUARY, FEBRUARY)
+        } else {
+            return Integer.parseInt((null)); // Return null if publishDate is not set
+        }
+
+
     }
 
 

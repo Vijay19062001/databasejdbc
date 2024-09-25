@@ -1,23 +1,50 @@
 package springdemo.databasejdbc.model;
 
 
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
-import springdemo.databasejdbc.exception.basicexception.BasicValidationException;
-
-import java.util.regex.Pattern;
-
-
-public class BookModel  {
+import java.time.LocalDate;
 
 
+public class BookModel {
+
+
+    @NotNull(message = "Book name cannot be null.")
+    @Size(min = 2, max = 100, message = "Book name must be between 2 and 100 characters.")
+    @Pattern(regexp = "^[a-zA-Z\\s\\p{Punct}]+$", message = "Book name should contain only letters, spaces, and punctuation.")
     private String bookName;
+
+    @NotNull()
+    @Pattern(regexp = "^[a-zA-Z\\s]+$",message =  "Author cannot be blank.")
+    @Size(min = 2, max = 50, message = "Author name must be between 2 and 50 characters.")
     private String author;
+
+    @NotNull
+    @Pattern(regexp = "^\\d{4}\\d{2}\\d{2}$", message = "Publish date must be in the format YYYY-MM-DD.")
     private String publishDate;
+
+    @Pattern(regexp = "^\\d+(\\.\\d{1,2})?$", message = "Prices must be a valid number with up to 2 decimal places.")
     private String prices;
+
+    @NotNull(message = "Publisher company cannot be blank.")
+    @Size(min = 2, max = 50, message = "Publisher company name must be between 2 and 50 characters.")
     private String publisherCompany;
-//    private String createdDate;
-//    private String updatedDate;
+
+    @Pattern(regexp = "^(ACTIVE|active|INACTIVE|inactive)$", message = "Status must be either 'ACTIVE' or 'INACTIVE'.")
     private String status;
+
+    private String publishMonth;
+
+
+    public void setPublishMonth(String publishMonth) {
+        this.publishMonth = publishMonth;
+    }
+    public String getPublishMonth(){
+        return publishMonth;
+    }
+
 
 
     public String getBookName() {
@@ -44,7 +71,7 @@ public class BookModel  {
         this.publishDate = publishDate;
     }
 
-    public String  getPrices() {
+    public String getPrices() {
         return prices;
     }
 
@@ -60,20 +87,6 @@ public class BookModel  {
         this.publisherCompany = publisherCompany;
     }
 
-
-//    public String getUpdatedDate() {return updatedDate;}
-//
-//    public void setUpdatedDate(String updatedDate) {this.updatedDate = updatedDate;}
-//
-//    public String getCreatedDate() {
-//        return createdDate;
-//    }
-//
-//    public void setCreatedDate(String createdDate) {
-//        this.createdDate = createdDate;
-//    }
-
-
     public String getStatus() {
         return status;
     }
@@ -81,41 +94,4 @@ public class BookModel  {
     public void setStatus(String status) {
         this.status = status;
     }
-
-
-    public void validate() throws BasicValidationException {
-        // Validate bookName (2-100 characters long, only letters, spaces, and hyphens allowed)
-        if (!Pattern.matches("^[a-zA-Z\\s\\-]{2,100}$", bookName)) {
-            throw new BasicValidationException("Book name must be 2-100 characters long and contain only letters, spaces, and hyphens.");
-        }
-
-
-        if (!Pattern.matches("^[a-zA-Z\\s]{2,50}$", author)) {
-            throw new BasicValidationException("Author name must be 2-50 characters long and contain only letters and spaces.");
-        }
-
-        if (!Pattern.matches("^\\d{4}\\d{2}\\d{2}$", publishDate)) {
-            throw new BasicValidationException("Publish date must be in the  YYYYMMDD.");
-        }
-
-//        if (!Pattern.matches("^\\d{4}-\\d{2}-\\d{2}$", createdDate)) {
-//            throw new BasicValidationException("Created date must be in the format YYYY-MM-DD.");
-//        }
-//        if (!Pattern.matches("^\\d{4}-\\d{2}-\\d{2}$", updatedDate)) {
-//            throw new BasicValidationException("Updated date must be in the format YYYY-MM-DD.");
-//        }
-
-        // Validate prices (numeric value with up to 2 decimal places)
-        if (!Pattern.matches("^\\d+(\\.\\d{1,2})?$", prices)) {
-            throw new BasicValidationException("Price must be a valid number with up to 2 decimal places.");
-        }
-
-        // Validate publisherCompany (2-50 characters long, only letters, spaces, and hyphens allowed)
-        if (!Pattern.matches("^[a-zA-Z\\s\\-]{2,50}$", publisherCompany)) {
-            throw new BasicValidationException("Publisher company must be 2-50 characters long and contain only letters, spaces, and hyphens.");
-        }
-
-
-    }
 }
-
