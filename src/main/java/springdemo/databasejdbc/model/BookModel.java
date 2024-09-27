@@ -5,15 +5,13 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
-import java.time.LocalDate;
-
 
 public class BookModel {
 
 
-    @NotNull(message = "Book name cannot be null.")
-    @Size(min = 2, max = 100, message = "Book name must be between 2 and 100 characters.")
-    @Pattern(regexp = "^[a-zA-Z\\s\\p{Punct}]+$", message = "Book name should contain only letters, spaces, and punctuation.")
+    @NotNull(message = "Books name cannot be null.")
+    @Size(min = 2, max = 100, message = "Books name must be between 2 and 100 characters.")
+    @Pattern(regexp = "^[a-zA-Z\\s\\p{Punct}]+$", message = "Books name should contain only letters, spaces, and punctuation.")
     private String bookName;
 
     @NotNull()
@@ -35,6 +33,8 @@ public class BookModel {
     @Pattern(regexp = "^(ACTIVE|active|INACTIVE|inactive)$", message = "Status must be either 'ACTIVE' or 'INACTIVE'.")
     private String status;
 
+    private String createdDate;
+    private String updatedDate;
     private String publishMonth;
 
 
@@ -44,7 +44,6 @@ public class BookModel {
     public String getPublishMonth(){
         return publishMonth;
     }
-
 
 
     public String getBookName() {
@@ -94,4 +93,21 @@ public class BookModel {
     public void setStatus(String status) {
         this.status = status;
     }
+
+    public String getUpdatedDate() {
+        return updatedDate;
+    }
+
+    public void setUpdatedDate(String updatedDate) {
+        this.updatedDate = updatedDate;
+    }
+
+    public String getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(String createdDate) {
+        this.createdDate = createdDate;
+    }
+
 }

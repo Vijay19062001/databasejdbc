@@ -1,18 +1,60 @@
 package springdemo.databasejdbc.model;
 
-import java.time.LocalDate;
-
 public class RetentionModel {
 
 
-
     private String id;
-    private String book;
+    private String bookId;
     private String name;
-    private LocalDate borrowDate;
-    private LocalDate returnDate;
+    private String borrowDate;
+    private String returnDate;
+    private String returns;
+    private String dbStatus;
+    private String createdDate;
+    private String updatedDate;
 
 
+    public String getBookId() {
+        return bookId;
+    }
+
+    public void setBookId(String bookId) {
+        this.bookId = bookId;
+    }
+
+    public String getBorrowDate() {
+        return borrowDate;
+    }
+
+    public void setBorrowDate(String borrowDate) {
+        this.borrowDate = borrowDate;
+    }
+
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getReturnDate() {
+        return returnDate;
+    }
+
+    public void setReturnDate(String returnDate) {
+        this.returnDate = returnDate;
+    }
+
+
+    public String getReturns() {
+        return returns;
+    }
+
+    public void setReturns(String returns) {
+        this.returns = returns;
+    }
 
 
     public String getId() {
@@ -24,36 +66,29 @@ public class RetentionModel {
     }
 
 
-    public LocalDate getBorrowDate() {
-        return borrowDate;
+    public String getDbStatus() {
+        return dbStatus;
     }
 
-    public void setBorrowDate(LocalDate borrowDate) {
-        this.borrowDate = borrowDate;
+    public void setDbStatus(String dbStatus) {
+        this.dbStatus = dbStatus;
     }
 
-    public String getBook() {
-        return book;
+    public String getUpdatedDate() {
+        return updatedDate;
     }
 
-    public void setBook(String book) {
-        this.book = book;
+    public void setUpdatedDate(String updatedDate) {
+        this.updatedDate = updatedDate;
     }
 
-    public String getName() {
-        return name;
+    public String getCreatedDate() {
+        return createdDate;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public LocalDate getReturnDate() {
-        return returnDate;
-    }
-
-    public void setReturnDate(LocalDate returnDate) {
-        this.returnDate = returnDate;
+    public void setCreatedDate(String createdDate) {
+        this.createdDate = createdDate;
     }
 
 }
+

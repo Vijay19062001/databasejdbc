@@ -2,57 +2,60 @@ package springdemo.databasejdbc.entities;
 
 import jakarta.persistence.*;
 
+import springdemo.databasejdbc.enums.DBStatus;
+import springdemo.databasejdbc.enums.RetentionStatus;
+
 import java.time.LocalDate;
 
 @Entity
+@Table(name = "retentions")
 public class RetentionEntity {
-
 
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
 
-    @ManyToOne
-    @JoinColumn(name = "book_id", referencedColumnName = "id", nullable = false) // Specify the foreign key
-    private Book book; // Reference to the Book entity
-
-    @Column(name = "name")
+    @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "borrow_date")
+    @Column(name = "borrow_date", nullable = false)
     private LocalDate borrowDate;
 
-    @Column(name = "return_date")
+    @Column(name = "return_date", nullable = false)
     private LocalDate returnDate;
+
+    @Column(name = "created_date",nullable = false)
+    private LocalDate createdDate;
+
+    @Column(name = "updated_date",nullable = false)
+    private LocalDate updatedDate;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "returns",nullable = false)
+    private RetentionStatus returns;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "db_status",nullable = false)
+    private DBStatus dbStatus;
+
+    @ManyToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "book_id",nullable = false)
+    private Books books;
+
 
     // Constructors, getters, and setters
     public RetentionEntity() {}
 
-    public RetentionEntity(Book book, String name, LocalDate borrowDate, LocalDate returnDate) {
-        this.book = book;
+    public RetentionEntity( String name, LocalDate borrowDate, LocalDate returnDate, RetentionStatus returns,DBStatus dbStatus) {
+
         this.name = name;
         this.borrowDate = borrowDate;
         this.returnDate = returnDate;
+        this.returns = returns;
+        this.dbStatus = dbStatus;
     }
 
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-
-    public Book getBook() {
-        return book;
-    }
-
-    public void setBook(Book book) {
-        this.book = book;
-    }
 
     public String getName() {
         return name;
@@ -76,5 +79,57 @@ public class RetentionEntity {
 
     public void setReturnDate(LocalDate returnDate) {
         this.returnDate = returnDate;
+
     }
+
+    public LocalDate getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(LocalDate createdDate) {
+        this.createdDate = createdDate;
+    }
+
+    public LocalDate getUpdatedDate() {
+        return updatedDate;
+    }
+
+    public void setUpdatedDate(LocalDate updatedDate) {
+        this.updatedDate = updatedDate;
+    }
+
+    public RetentionStatus getReturns() {
+        return returns;
+    }
+
+    public void setReturns(RetentionStatus returns) {
+        this.returns = returns;
+    }
+
+    public DBStatus getDbStatus() {
+        return dbStatus;
+    }
+
+    public void setDbStatus(DBStatus dbStatus) {
+        this.dbStatus = dbStatus;
+    }
+
+
+    public Books getBook() {
+        return books;
+    }
+
+    public void setBook(Books books) {
+        this.books = books;
+    }
+
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
 }

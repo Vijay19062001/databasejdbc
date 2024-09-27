@@ -2,18 +2,18 @@ package springdemo.databasejdbc.enums;
 
 public enum RetentionStatus {
 
-    ENTRY_DATE("entry_date"),
-    RETURN_DATE("return_date"),
-    EARLY_RETURN_DATE("early_return_date");
+    EARLY_RETURN("early_return"),
+    LATE_RETURN("late_return"),
+    ON_TIME("on_time");
 
-    private final String status;
+    private final String returns;
 
-    RetentionStatus(String status) {
-        this.status = status;
+    RetentionStatus(String returns) {
+        this.returns = returns;
     }
 
-    public String getStatus() {
-        return status;
+    public String getReturns() {
+        return returns;
     }
 
 }

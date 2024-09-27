@@ -1,7 +1,7 @@
 package springdemo.databasejdbc.mapper;
 
 import org.springframework.stereotype.Component;
-import springdemo.databasejdbc.entities.Book;
+import springdemo.databasejdbc.entities.Books;
 import springdemo.databasejdbc.model.BookModel;
 import springdemo.databasejdbc.enums.BookStatus;
 import springdemo.databasejdbc.exception.InvalidDateFormatException;
@@ -9,7 +9,6 @@ import springdemo.databasejdbc.utils.DateUtils;
 
 
 import java.time.LocalDate;
-import java.time.Month;
 
 
 @Component
@@ -17,41 +16,47 @@ public class BookMapper {
 
 
 
-    public Book toEntity(BookModel bookModel) throws InvalidDateFormatException {
-        Book book = new Book();
-        book.setBookName(bookModel.getBookName());
-        book.setAuthor(bookModel.getAuthor());
+    public Books toEntity(BookModel bookModel) throws InvalidDateFormatException {
+        Books books = new Books();
+        books.setBookName(bookModel.getBookName());
+        books.setAuthor(bookModel.getAuthor());
 
-        // publishDate from String to LocalDate
         LocalDate publishDate = DateUtils.stringToLocalDate(String.valueOf(bookModel.getPublishDate()));
-        book.setPublishDate(LocalDate.parse(String.valueOf(publishDate)));
+        books.setPublishDate(LocalDate.parse(String.valueOf(publishDate)));
+        books.setPublishDate(LocalDate.parse(String.valueOf(LocalDate.from(publishDate))));
 
-        book.setPublishDate(LocalDate.parse(String.valueOf(LocalDate.from(publishDate))));
-        book.setPrices(Double.valueOf(bookModel.getPrices()));
-        book.setPublisherCompany(bookModel.getPublisherCompany());
+        books.setPrices(Double.valueOf(bookModel.getPrices()));
+        books.setPublisherCompany(bookModel.getPublisherCompany());
+
+        LocalDate createdDate = DateUtils.stringToLocalDate(String.valueOf(bookModel.getCreatedDate()));
+        books.setCreatedDate(LocalDate.parse(String.valueOf(createdDate)));
+        books.setCreatedDate(LocalDate.parse(String.valueOf(LocalDate.from(createdDate))));
+
+        LocalDate updatedDate = DateUtils.stringToLocalDate(String.valueOf(bookModel.getUpdatedDate()));
+        books.setUpdatedDate(LocalDate.parse(String.valueOf(updatedDate)));
+        books.setUpdatedDate(LocalDate.parse(String.valueOf(LocalDate.from(updatedDate))));
+
+        books.setPublishMonth(bookModel.getPublishMonth());
+        books.setStatus(BookStatus.valueOf(bookModel.getStatus().toUpperCase()));
 
 
-        book.setPublishMonth(bookModel.getPublishMonth());
-        // Set status based on the book model input
-        book.setStatus(BookStatus.valueOf(bookModel.getStatus().toUpperCase()));
-
-        return book;
+        return books;
     }
 
-    public BookModel toModel(Book book){
+    public BookModel toModel(Books books){
         BookModel bookModel = new BookModel();
-        bookModel.setBookName(book.getBookName());
-        bookModel.setAuthor(book.getAuthor());
-        bookModel.setPrices(String.valueOf(book.getPrices()));
-
-        String formattedPublishDate = DateUtils.localDateToString(book.getPublishDate());
+        bookModel.setBookName(books.getBookName());
+        bookModel.setAuthor(books.getAuthor());
+        bookModel.setPrices(String.valueOf(books.getPrices()));
+        String formattedPublishDate = DateUtils.localDateToString(books.getPublishDate());
         bookModel.setPublishDate(formattedPublishDate);
-
-        bookModel.setPublisherCompany(book.getPublisherCompany());
-
-        bookModel.setStatus(book.getStatus().toString());
-
-        bookModel.setPublishMonth(String.valueOf(book.getPublishMonth()));
+        bookModel.setPublisherCompany(books.getPublisherCompany());
+        bookModel.setStatus(books.getStatus().toString());
+        String formattedCreatedDate = DateUtils.localDateToString(books.getCreatedDate());
+        bookModel.setCreatedDate(formattedCreatedDate);
+        String formattedUpdatedDate = DateUtils.localDateToString(books.getUpdatedDate());
+        bookModel.setUpdatedDate(formattedUpdatedDate);
+        bookModel.setPublishMonth(String.valueOf(books.getPublishMonth()));
 
         return bookModel;
     }

@@ -3,7 +3,7 @@ package springdemo.databasejdbc.enums;
 public enum BookStatus {
 
   ACTIVE("Active"),
-    INACTIVE("InActive");
+  INACTIVE("InActive");
 
 
     private final String status;

@@ -1,11 +1,12 @@
 package springdemo.databasejdbc.repository;
 
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import springdemo.databasejdbc.entities.Books;
+import springdemo.databasejdbc.entities.RetentionEntity;
 
 @Repository
-    public interface BookRepository extends JpaRepository<Books, Long> {
-    }
+public interface RetentionRepository extends JpaRepository<RetentionEntity, Long> {
 
+}
