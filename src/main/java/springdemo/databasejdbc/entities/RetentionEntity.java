@@ -41,7 +41,7 @@ public class RetentionEntity {
 
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "book_id",nullable = false)
-    private Books books;
+    private Books book;
 
 
     // Constructors, getters, and setters
@@ -116,11 +116,11 @@ public class RetentionEntity {
 
 
     public Books getBook() {
-        return books;
+        return book;
     }
 
-    public void setBook(Books books) {
-        this.books = books;
+    public void setBook(Books book) {
+        this.book = book;
     }
 
 

@@ -46,7 +46,7 @@ public class Books {
     public String publishMonth;        // To store the month, transient so it's not stored in the DB
 
 
-    @OneToMany(mappedBy = "books", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<RetentionEntity> retentionEntity;
 
 

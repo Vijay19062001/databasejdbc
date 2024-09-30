@@ -48,36 +48,36 @@ public class BookService implements ServiceBook {
 
     @Override
     public BookModel createBook(BookModel bookModel) {
-        Books books = bookMapper.toEntity(bookModel);
-        Books saved = bookRepository.save(books);
+        Books book = bookMapper.toEntity(bookModel);
+        Books saved = bookRepository.save(book);
 
         return bookMapper.toModel(saved);
     }
 
     @Override
     public BookModel updateBook(Long id, BookModel bookModel) {
-        Books books = bookRepository.findById(id)
+        Books book = bookRepository.findById(id)
                 .orElseThrow(() -> new BookNotFoundException("Books with id " + id + " not found"));
 
-            books.setBookName(bookModel.getBookName());
-            books.setAuthor(bookModel.getAuthor());
-            books.setPrices(Double.valueOf(bookModel.getPrices()));
-            books.setPublisherCompany(bookModel.getPublisherCompany());
+            book.setBookName(bookModel.getBookName());
+            book.setAuthor(bookModel.getAuthor());
+            book.setPrices(Double.valueOf(bookModel.getPrices()));
+            book.setPublisherCompany(bookModel.getPublisherCompany());
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
         try{
             LocalDate publishDate = LocalDate.parse(bookModel.getPublishDate(),formatter);
-            books.setPublishDate(publishDate);
+            book.setPublishDate(publishDate);
 
             LocalDate createdDate = LocalDate.parse(bookModel.getCreatedDate(),formatter);
-            books.setCreatedDate(createdDate);
+            book.setCreatedDate(createdDate);
 
             LocalDate updatedDate = LocalDate.parse(bookModel.getUpdatedDate(),formatter);
-            books.setUpdatedDate(updatedDate);
+            book.setUpdatedDate(updatedDate);
 
         }catch (DateTimeParseException e){
             throw new IllegalArgumentException("Invalid date format.Expected format is yyyyMMdd",e);
         }
-            Books updatesBooks = bookRepository.save(books);
+            Books updatesBooks = bookRepository.save(book);
             return bookMapper.toModel(updatesBooks);
     }
 

@@ -22,7 +22,7 @@ public class RetentionController {
 
     @PostMapping("/add")
     @ResponseStatus(HttpStatus.CREATED) // Set status to 201 Created
-    public  RetentionModel createRetention(@Valid @RequestBody RetentionModel retentionModel) {
+    public  RetentionModel createRetention(@Valid @RequestBody  RetentionModel retentionModel) {
 
         return retentionService.createRetention(retentionModel);
 
@@ -32,7 +32,7 @@ public class RetentionController {
     // Get a single retention record by ID
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK) // Set status to 200 OK
-    public RetentionModel getRetentionById(@PathVariable long id) {
+    public RetentionModel getRetentionById(@PathVariable int id) {
         RetentionModel retention = retentionService.getRetentionById(id);
         if (retention == null) {
             throw new RuntimeException("Retention with id " + id + " not found");
@@ -63,7 +63,7 @@ public class RetentionController {
     // Delete a book by ID
     @DeleteMapping("/delete/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteRetention(@PathVariable long id) {
+    public void deleteRetention(@PathVariable int id) {
         RetentionModel retentionEntity = retentionService.getRetentionById(id);
 
         if (retentionEntity == null) {

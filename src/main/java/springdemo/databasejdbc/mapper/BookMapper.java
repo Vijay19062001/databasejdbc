@@ -17,46 +17,46 @@ public class BookMapper {
 
 
     public Books toEntity(BookModel bookModel) throws InvalidDateFormatException {
-        Books books = new Books();
-        books.setBookName(bookModel.getBookName());
-        books.setAuthor(bookModel.getAuthor());
+        Books book = new Books();
+        book.setBookName(bookModel.getBookName());
+        book.setAuthor(bookModel.getAuthor());
 
         LocalDate publishDate = DateUtils.stringToLocalDate(String.valueOf(bookModel.getPublishDate()));
-        books.setPublishDate(LocalDate.parse(String.valueOf(publishDate)));
-        books.setPublishDate(LocalDate.parse(String.valueOf(LocalDate.from(publishDate))));
+        book.setPublishDate(LocalDate.parse(String.valueOf(publishDate)));
+        book.setPublishDate(LocalDate.parse(String.valueOf(LocalDate.from(publishDate))));
 
-        books.setPrices(Double.valueOf(bookModel.getPrices()));
-        books.setPublisherCompany(bookModel.getPublisherCompany());
+        book.setPrices(Double.valueOf(bookModel.getPrices()));
+        book.setPublisherCompany(bookModel.getPublisherCompany());
 
         LocalDate createdDate = DateUtils.stringToLocalDate(String.valueOf(bookModel.getCreatedDate()));
-        books.setCreatedDate(LocalDate.parse(String.valueOf(createdDate)));
-        books.setCreatedDate(LocalDate.parse(String.valueOf(LocalDate.from(createdDate))));
+        book.setCreatedDate(LocalDate.parse(String.valueOf(createdDate)));
+        book.setCreatedDate(LocalDate.parse(String.valueOf(LocalDate.from(createdDate))));
 
         LocalDate updatedDate = DateUtils.stringToLocalDate(String.valueOf(bookModel.getUpdatedDate()));
-        books.setUpdatedDate(LocalDate.parse(String.valueOf(updatedDate)));
-        books.setUpdatedDate(LocalDate.parse(String.valueOf(LocalDate.from(updatedDate))));
+        book.setUpdatedDate(LocalDate.parse(String.valueOf(updatedDate)));
+        book.setUpdatedDate(LocalDate.parse(String.valueOf(LocalDate.from(updatedDate))));
 
-        books.setPublishMonth(bookModel.getPublishMonth());
-        books.setStatus(BookStatus.valueOf(bookModel.getStatus().toUpperCase()));
+        book.setPublishMonth(bookModel.getPublishMonth());
+        book.setStatus(BookStatus.valueOf(bookModel.getStatus().toUpperCase()));
 
 
-        return books;
+        return book;
     }
 
-    public BookModel toModel(Books books){
+    public BookModel toModel(Books book){
         BookModel bookModel = new BookModel();
-        bookModel.setBookName(books.getBookName());
-        bookModel.setAuthor(books.getAuthor());
-        bookModel.setPrices(String.valueOf(books.getPrices()));
-        String formattedPublishDate = DateUtils.localDateToString(books.getPublishDate());
+        bookModel.setBookName(book.getBookName());
+        bookModel.setAuthor(book.getAuthor());
+        bookModel.setPrices(String.valueOf(book.getPrices()));
+        String formattedPublishDate = DateUtils.localDateToString(book.getPublishDate());
         bookModel.setPublishDate(formattedPublishDate);
-        bookModel.setPublisherCompany(books.getPublisherCompany());
-        bookModel.setStatus(books.getStatus().toString());
-        String formattedCreatedDate = DateUtils.localDateToString(books.getCreatedDate());
+        bookModel.setPublisherCompany(book.getPublisherCompany());
+        bookModel.setStatus(book.getStatus().toString());
+        String formattedCreatedDate = DateUtils.localDateToString(book.getCreatedDate());
         bookModel.setCreatedDate(formattedCreatedDate);
-        String formattedUpdatedDate = DateUtils.localDateToString(books.getUpdatedDate());
+        String formattedUpdatedDate = DateUtils.localDateToString(book.getUpdatedDate());
         bookModel.setUpdatedDate(formattedUpdatedDate);
-        bookModel.setPublishMonth(String.valueOf(books.getPublishMonth()));
+        bookModel.setPublishMonth(String.valueOf(book.getPublishMonth()));
 
         return bookModel;
     }

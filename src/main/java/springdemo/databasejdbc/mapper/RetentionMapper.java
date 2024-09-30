@@ -17,10 +17,10 @@ public class RetentionMapper {
 
     public RetentionEntity toEntity(RetentionModel retentionModel) {
         RetentionEntity retentionEntity = new RetentionEntity();
-        Books books = new Books();
+        Books book = new Books();
 
-        books.setId(Math.toIntExact(Long.parseLong(retentionModel.getId())));
-        retentionEntity.setBook(books);
+        book.setId((Integer.parseInt(retentionModel.getId())));
+        retentionEntity.setBook(book);
         retentionEntity.setName(retentionModel.getName());
         LocalDate borrowDate = DateUtils.stringToLocalDate(String.valueOf(retentionModel.getBorrowDate()));
         retentionEntity.setBorrowDate(LocalDate.parse(String.valueOf(borrowDate)));
@@ -43,9 +43,9 @@ public class RetentionMapper {
 
     public RetentionModel toModel(RetentionEntity retentionEntity) {
         RetentionModel retentionModel = new RetentionModel();
-        Books books = new Books();
+        Books book = new Books();
 
-        retentionModel.setBookId(String.valueOf(books.getId()));
+        retentionModel.setBookId(String.valueOf(book.getId()));
         retentionModel.setId(String.valueOf(retentionEntity.getId()));
         retentionModel.setName(retentionEntity.getName());
         String formattedBorrowDate = DateUtils.localDateToString(retentionEntity.getBorrowDate());

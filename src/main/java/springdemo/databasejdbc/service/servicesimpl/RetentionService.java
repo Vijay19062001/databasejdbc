@@ -40,7 +40,7 @@ public class RetentionService implements ServiceRetention {
     }
 
     @Override
-    public RetentionModel updateRetention(long id, RetentionModel retentionModel){
+    public RetentionModel updateRetention(int id, RetentionModel retentionModel){
         RetentionEntity retentionEntity = retentionRepository.findById(id)
                 .orElseThrow(() -> new BookNotFoundException("Books with id " + id + " not found"));
 
@@ -82,7 +82,7 @@ public class RetentionService implements ServiceRetention {
 
 
     @Override
-    public RetentionModel getRetentionById(long id) {
+    public RetentionModel getRetentionById(int id) {
         return retentionRepository.findById(id)
                 .map(retentionMapper::toModel)
                 .orElse(null);
@@ -90,7 +90,7 @@ public class RetentionService implements ServiceRetention {
 
 
     @Override
-    public void deleteRetention(Long id) {
+    public void deleteRetention(int id) {
         retentionRepository.deleteById(id);
     }
 
