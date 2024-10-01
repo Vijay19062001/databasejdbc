@@ -16,6 +16,7 @@ public class RetentionEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+
     @Column(name = "name", nullable = false)
     private String name;
 
@@ -131,5 +132,6 @@ public class RetentionEntity {
     public void setId(int id) {
         this.id = id;
     }
+
 
 }

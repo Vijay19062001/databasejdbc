@@ -18,6 +18,7 @@ public class BookMapper {
 
     public Books toEntity(BookModel bookModel) throws InvalidDateFormatException {
         Books book = new Books();
+
         book.setBookName(bookModel.getBookName());
         book.setAuthor(bookModel.getAuthor());
 

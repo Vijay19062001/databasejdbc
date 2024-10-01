@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import springdemo.databasejdbc.entities.Books;
 import springdemo.databasejdbc.entities.RetentionEntity;
+import springdemo.databasejdbc.enums.BookStatus;
+import springdemo.databasejdbc.enums.DBStatus;
 import springdemo.databasejdbc.exception.basicexception.BookNotFoundException;
 import springdemo.databasejdbc.mapper.BookMapper;
 import springdemo.databasejdbc.mapper.RetentionMapper;
@@ -33,36 +35,56 @@ public class BookRetentionService implements ServiceBookRetention {
     @Autowired
     private RetentionRepository retentionRepository;
 
+        @Override
+        public List<BookRetentionModel> getBooksWithRetentions(Long id) {
+            List<Books> books;
+            if (id == null || id == 0) {
+                books = bookRepository.findAll();
+            } else {
+                books = Collections.singletonList(bookRepository.findById(id)
+                        .orElseThrow(() -> new BookNotFoundException("Book not found with id: " + id)));
+            }
 
-    @Override
-    public List<BookRetentionModel> getBookWithRetention(Integer id){
-
-        if(id > 0)
-        {
-
-            Books book = bookRepository.findById(id)
-                    .orElseThrow(()-> new BookNotFoundException("Book not found with id: "+id));
-            return Collections.singletonList(createBookWithRetentionModel(book));
-
-        }
-        else{
-            List<Books>allBooks = bookRepository.findAll();
-            return allBooks.stream()
-                    .map(this::createBookWithRetentionModel)
+            return books.stream()
+                    .flatMap(book -> {
+                        List<RetentionEntity> retentionEntities = retentionRepository.findByBook(book);
+                        return retentionEntities.stream()
+                                .map(retention -> new BookRetentionModel(
+                                        book.getId(),
+                                        book.getBookName(),
+                                        retentionMapper.toModel(retention)
+                                ));
+                    })
                     .collect(Collectors.toList());
         }
 
-    }
 
 
-    private BookRetentionModel createBookWithRetentionModel(Books id){
-        BookModel bookModel = bookMapper.toModel(id);
-        List<RetentionEntity> retentionEntities = retentionRepository.findByBook(id);
-        List<RetentionModel> retentionModels = retentionEntities.stream()
+    @Override
+    public List<RetentionModel> getAllBookRecordRetentions(String status)
+    {
+        List<RetentionEntity> retentionEntities;
+        if (status == null || status.equalsIgnoreCase("all"))
+        {
+            retentionEntities = retentionRepository.findAll();
+        }
+        else if (status.equalsIgnoreCase("active"))
+        {
+            retentionEntities = retentionRepository.findByDbStatus(DBStatus.ACTIVE);
+        }
+        else if (status.equalsIgnoreCase("inactive"))
+        {
+            retentionEntities = retentionRepository.findByDbStatus(DBStatus.INACTIVE);
+        }
+        else
+        {
+            throw new IllegalArgumentException("Invalid status. Use 'all', 'active', or 'inactive'.");
+        }
+
+        return retentionEntities.stream()
                 .map(retentionMapper::toModel)
                 .collect(Collectors.toList());
 
-        return new BookRetentionModel(bookModel,retentionModels);
     }
 
 }

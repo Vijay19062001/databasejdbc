@@ -153,7 +153,6 @@ public class Books {
     }
 
 
-    @Transient
     public int getPublishMonth() {
 
         if (publishDate != null) {

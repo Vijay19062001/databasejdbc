@@ -2,7 +2,9 @@ package springdemo.databasejdbc.service.servicesimpl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import springdemo.databasejdbc.entities.Books;
 import springdemo.databasejdbc.entities.RetentionEntity;
+import springdemo.databasejdbc.enums.BookStatus;
 import springdemo.databasejdbc.enums.DBStatus;
 import springdemo.databasejdbc.enums.RetentionStatus;
 import springdemo.databasejdbc.exception.basicexception.BookNotFoundException;
@@ -30,14 +32,32 @@ public class RetentionService implements ServiceRetention {
     private RetentionMapper retentionMapper;
 
 
-
     @Override
     public RetentionModel createRetention(RetentionModel retentionModel) {
-        RetentionEntity retentionEntity = retentionMapper.toEntity(retentionModel);
+        RetentionEntity retentionEntity;
+
+        if (retentionModel.getBookId() != null && !retentionModel.getBookId().isEmpty()) {
+            try {
+                Long bookId = Long.valueOf(retentionModel.getBookId());
+                Books book = bookRepository.findByIdAndStatus(bookId, BookStatus.ACTIVE);
+
+                if (book == null) {
+                    throw new BookNotFoundException("Book with id " + bookId + " not found or not active");
+                }
+
+                retentionEntity = retentionMapper.toEntity(retentionModel, book);
+            } catch (NumberFormatException e) {
+                throw new IllegalArgumentException("Invalid book ID format: " + retentionModel.getBookId(), e);
+            }
+        } else {
+
+            retentionEntity = retentionMapper.toEntity(retentionModel, null);
+        }
+
         RetentionEntity saved = retentionRepository.save(retentionEntity);
-        RetentionModel response = retentionMapper.toModel(saved);
-        return response;
+        return retentionMapper.toModel(saved);
     }
+
 
     @Override
     public RetentionModel updateRetention(int id, RetentionModel retentionModel){

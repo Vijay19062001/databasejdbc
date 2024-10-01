@@ -1,26 +1,45 @@
 package springdemo.databasejdbc.model;
 
-import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 public class BookRetentionModel {
 
-    private BookModel bookList;
-    private List<RetentionModel> retentionList;
+    @JsonPropertyOrder({ "id","bookName","retensModel"})
+    private Long id;
+    private String bookName;
+    private RetentionModel retensModel;
 
+    public BookRetentionModel(long id, String bookName, RetentionModel dModel){
+        this.id = id;
+        this.bookName = bookName;
+        this.retensModel = dModel;
 
-    public BookRetentionModel(BookModel bookList, List<RetentionModel> retentionList){
-
-        this.bookList = bookList;
-        this.retentionList = retentionList;
+    }
+    public long getId() {
+        return id;
     }
 
-    public BookModel getBookList() {
-        return bookList;
+    public void setId(long id) {
+        this.id = id;
     }
 
-    // Getter for retentionList
-    public List<RetentionModel> getRetentionList() {
-        return retentionList;
+    public RetentionModel getRetensModel() {
+        return retensModel;
     }
+
+    public void setRetensModel(RetentionModel retensModel) {
+        this.retensModel = retensModel;
+    }
+    public String getBookName() {
+        return bookName;
+    }
+
+    public void setBookName(String bookName) {
+        this.bookName = bookName;
+    }
+
+
+
 
 }

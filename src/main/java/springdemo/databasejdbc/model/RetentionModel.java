@@ -1,9 +1,13 @@
 package springdemo.databasejdbc.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class RetentionModel {
 
 
+    @JsonIgnore
     private String id;
+
     private String bookId;
     private String name;
     private String borrowDate;
@@ -91,4 +95,3 @@ public class RetentionModel {
     }
 
 }
-

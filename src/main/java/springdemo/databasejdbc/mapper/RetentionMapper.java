@@ -15,11 +15,9 @@ import java.time.LocalDate;
 @Component
 public class RetentionMapper {
 
-    public RetentionEntity toEntity(RetentionModel retentionModel) {
+    public RetentionEntity toEntity(RetentionModel retentionModel, Books book) {
         RetentionEntity retentionEntity = new RetentionEntity();
-        Books book = new Books();
 
-        book.setId((Integer.parseInt(retentionModel.getId())));
         retentionEntity.setBook(book);
         retentionEntity.setName(retentionModel.getName());
         LocalDate borrowDate = DateUtils.stringToLocalDate(String.valueOf(retentionModel.getBorrowDate()));
@@ -45,8 +43,8 @@ public class RetentionMapper {
         RetentionModel retentionModel = new RetentionModel();
         Books book = new Books();
 
-        retentionModel.setBookId(String.valueOf(book.getId()));
-        retentionModel.setId(String.valueOf(retentionEntity.getId()));
+        retentionModel.setId(String.valueOf(book.getId()));
+        retentionModel.setBookId(String.valueOf(retentionEntity.getBook().getId()));
         retentionModel.setName(retentionEntity.getName());
         String formattedBorrowDate = DateUtils.localDateToString(retentionEntity.getBorrowDate());
         retentionModel.setBorrowDate(formattedBorrowDate);
