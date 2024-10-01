@@ -9,13 +9,15 @@ import springdemo.databasejdbc.entities.RetentionEntity;
 import springdemo.databasejdbc.enums.BookStatus;
 import springdemo.databasejdbc.enums.DBStatus;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Repository
 public interface RetentionRepository extends JpaRepository<RetentionEntity, Integer> {
 
     List<RetentionEntity>findByBook(Books id);
+    List<RetentionEntity>findByDbStatus(DBStatus dbStatus);
+    List<RetentionEntity> findByBookAndBorrowDateBetween(Books book, LocalDate borrowDate, LocalDate returnDate);
 
-   List<RetentionEntity>findByDbStatus(DBStatus dbStatus);
 
 }

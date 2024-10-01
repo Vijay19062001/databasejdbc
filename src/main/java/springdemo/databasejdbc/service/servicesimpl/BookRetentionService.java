@@ -16,6 +16,7 @@ import springdemo.databasejdbc.repository.BookRepository;
 import springdemo.databasejdbc.repository.RetentionRepository;
 import springdemo.databasejdbc.service.ServiceBookRetention;
 
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -85,6 +86,35 @@ public class BookRetentionService implements ServiceBookRetention {
                 .map(retentionMapper::toModel)
                 .collect(Collectors.toList());
 
+    }
+
+    @Override
+    public List<BookRetentionModel>getBooksWithDateRecords(Long id, LocalDate borrowDate, LocalDate returnDate) {
+        List<Books> books;
+        if (id == null || id == 0) {
+            books = bookRepository.findAll();
+        } else {
+            books = Collections.singletonList(bookRepository.findById(id)
+                    .orElseThrow(() -> new BookNotFoundException("Book not found with id: " + id)));
+        }
+
+        return books.stream()
+                .flatMap(book -> {
+                    List<RetentionEntity> retentionEntities = retentionRepository.findByBook(book);
+
+                    return retentionEntities.stream()
+                            .filter(retention ->
+                                    retention.getDbStatus() == DBStatus.ACTIVE &&
+                                            (borrowDate == null || !retention.getBorrowDate().isBefore(borrowDate)) &&
+                                            (returnDate == null || !retention.getBorrowDate().isAfter(returnDate))
+                            )
+                            .map(retention -> new BookRetentionModel(
+                                    book.getId(),
+                                    book.getBookName(),
+                                    retentionMapper.toModel(retention)
+                            ));
+                })
+                .collect(Collectors.toList());
     }
 
 }
