@@ -11,7 +11,7 @@ import java.util.Optional;
 public interface BookRepository extends JpaRepository<Books, Long> {
 
     Optional<Books> findById(Long id);
-
     Books findByIdAndStatus(Long id, BookStatus status);
+
 }
 

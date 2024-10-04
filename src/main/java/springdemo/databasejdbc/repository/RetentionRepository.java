@@ -1,6 +1,8 @@
 package springdemo.databasejdbc.repository;
 
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -18,6 +20,5 @@ public interface RetentionRepository extends JpaRepository<RetentionEntity, Inte
     List<RetentionEntity>findByBook(Books id);
     List<RetentionEntity>findByDbStatus(DBStatus dbStatus);
     List<RetentionEntity> findByBookAndBorrowDateBetween(Books book, LocalDate borrowDate, LocalDate returnDate);
-
-
+    Page<RetentionEntity> findAll(Pageable pageable);
 }

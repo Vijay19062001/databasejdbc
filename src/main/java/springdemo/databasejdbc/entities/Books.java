@@ -46,8 +46,6 @@ public class Books {
     public String publishMonth;        // To store the month, transient so it's not stored in the DB
 
 
-    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<RetentionEntity> retentionEntity;
 
 
     // Constructors, getters, and setters
@@ -128,13 +126,6 @@ public class Books {
     }
 
 
-    public List<RetentionEntity> getRetentionEntity() {
-        return retentionEntity;
-    }
-
-    public void setRetentionEntity(List<RetentionEntity> retentionEntity) {
-        this.retentionEntity = retentionEntity;
-    }
 
     public LocalDate getCreatedDate() {
         return createdDate;

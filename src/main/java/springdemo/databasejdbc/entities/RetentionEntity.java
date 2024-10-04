@@ -40,7 +40,7 @@ public class RetentionEntity {
     @Column(name = "db_status",nullable = false)
     private DBStatus dbStatus;
 
-    @ManyToOne(cascade = CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "book_id",nullable = false)
     private Books book;
 

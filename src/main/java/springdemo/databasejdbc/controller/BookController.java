@@ -2,9 +2,12 @@ package springdemo.databasejdbc.controller;
 
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import springdemo.databasejdbc.entities.Books;
 import springdemo.databasejdbc.exception.basicexception.BasicValidationException;
 import springdemo.databasejdbc.exception.basicexception.BookNotFoundException;
 import springdemo.databasejdbc.model.BookModel;
@@ -78,4 +81,20 @@ public class BookController {
 
         bookService.deleteBook(id);
     }
+    @GetMapping("/paging")
+    public ResponseEntity<Page<Books>> getAllBooks(
+            @RequestParam(required = false) Integer pageNo,
+            @RequestParam(required = false) Integer pageSize,
+            @RequestParam(required = false) String sortBy,
+            @RequestParam(required = false) String sortDir)
+    {
+
+        pageNo = (pageNo != null) ? pageNo : 0;
+        pageSize = (pageSize != null) ? pageSize : 10;
+        sortBy = (sortBy != null) ? sortBy : "id";
+        sortDir = (sortDir != null) ? sortDir : "asc";
+
+        Page<Books> book = bookService.getBooksWithPagingAndSorting(pageNo, pageSize, sortBy, sortDir);
+        return new ResponseEntity<>(book, HttpStatus.OK);
+}
 }
