@@ -2,12 +2,11 @@ package springdemo.databasejdbc.controller;
 
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
+import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import springdemo.databasejdbc.entities.Books;
 import springdemo.databasejdbc.exception.basicexception.BasicValidationException;
 import springdemo.databasejdbc.exception.basicexception.BookNotFoundException;
 import springdemo.databasejdbc.model.BookModel;
@@ -30,28 +29,23 @@ public class BookController {
         return bookService.getAllBooks(); // Return list of books directly
     }
 
-
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public BookModel getBookById(@PathVariable Long id) {
         BookModel book = bookService.getBookById(id);
         if (book == null) {
 
-            throw new BookNotFoundException("Books with id " + id + " not founds");
+            throw new BookNotFoundException("Book with id " + id + " not founds");
         }
         return book;
     }
 
 
-
     @PostMapping("/add")
     @ResponseStatus(HttpStatus.CREATED) // Set status to 201 Created
-    public @ResponseBody BookModel createBook(@Valid @RequestBody BookModel bookModel) throws BasicValidationException {
-
+    public BookModel createBook(@Valid @RequestBody BookModel bookModel) throws BasicValidationException {
         return bookService.createBook(bookModel);
-
     }
-
 
     // Update an existing book by ID
     @PutMapping("/update/{id}")
@@ -81,20 +75,28 @@ public class BookController {
 
         bookService.deleteBook(id);
     }
+
     @GetMapping("/paging")
-    public ResponseEntity<Page<Books>> getAllBooks(
+    public ResponseEntity<Page<BookModel>> getAllBooks(
             @RequestParam(required = false) Integer pageNo,
             @RequestParam(required = false) Integer pageSize,
             @RequestParam(required = false) String sortBy,
-            @RequestParam(required = false) String sortDir)
+            @RequestParam(required = false) String sortDir,
+            @RequestParam(required = false) String searchText,
+            @RequestParam(required = false) String authorName)
     {
-
         pageNo = (pageNo != null) ? pageNo : 0;
-        pageSize = (pageSize != null) ? pageSize : 10;
+        pageSize = (pageSize != null) ? pageSize : 5;
         sortBy = (sortBy != null) ? sortBy : "id";
         sortDir = (sortDir != null) ? sortDir : "asc";
 
-        Page<Books> book = bookService.getBooksWithPagingAndSorting(pageNo, pageSize, sortBy, sortDir);
-        return new ResponseEntity<>(book, HttpStatus.OK);
+        Page<BookModel> bookPage = bookService.getBooksWithPagingAndSorting(pageNo, pageSize, sortBy, sortDir, searchText,authorName);
+        return new ResponseEntity<>(bookPage, HttpStatus.OK);
+
+    }
+
 }
-}
+
+
+
+

@@ -2,7 +2,6 @@ package springdemo.databasejdbc.service.servicesimpl;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
@@ -17,7 +16,6 @@ import springdemo.databasejdbc.mapper.RetentionMapper;
 import springdemo.databasejdbc.model.BookModel;
 import springdemo.databasejdbc.repository.BookRepository;
 import springdemo.databasejdbc.service.ServiceBook;
-
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -43,7 +41,7 @@ public class BookService implements ServiceBook {
 
 
     @Override
-    public List<BookModel> getAllBooks(){
+    public List<BookModel> getAllBooks() {
         return bookRepository.findAll().stream()
                 .map(bookMapper::toModel)
                 .collect(Collectors.toList());
@@ -70,26 +68,26 @@ public class BookService implements ServiceBook {
         Books book = bookRepository.findById(id)
                 .orElseThrow(() -> new BookNotFoundException("Books with id " + id + " not found"));
 
-            book.setBookName(bookModel.getBookName());
-            book.setAuthor(bookModel.getAuthor());
-            book.setPrices(Double.valueOf(bookModel.getPrices()));
-            book.setPublisherCompany(bookModel.getPublisherCompany());
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
-        try{
-            LocalDate publishDate = LocalDate.parse(bookModel.getPublishDate(),formatter);
+        book.setBookName(bookModel.getBookName());
+        book.setAuthor(bookModel.getAuthor());
+        book.setPrices(Double.valueOf(bookModel.getPrices()));
+        book.setPublisherCompany(bookModel.getPublisherCompany());
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+        try {
+            LocalDate publishDate = LocalDate.parse(bookModel.getPublishDate(), formatter);
             book.setPublishDate(publishDate);
 
-            LocalDate createdDate = LocalDate.parse(bookModel.getCreatedDate(),formatter);
+            LocalDate createdDate = LocalDate.parse(bookModel.getCreatedDate(), formatter);
             book.setCreatedDate(createdDate);
 
-            LocalDate updatedDate = LocalDate.parse(bookModel.getUpdatedDate(),formatter);
+            LocalDate updatedDate = LocalDate.parse(bookModel.getUpdatedDate(), formatter);
             book.setUpdatedDate(updatedDate);
 
-        }catch (DateTimeParseException e){
-            throw new IllegalArgumentException("Invalid date format.Expected format is yyyyMMdd",e);
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("Invalid date format.Expected format is yyyyMMdd", e);
         }
-            Books updatesBooks = bookRepository.save(book);
-            return bookMapper.toModel(updatesBooks);
+        Books updatesBooks = bookRepository.save(book);
+        return bookMapper.toModel(updatesBooks);
     }
 
     @Override
@@ -97,33 +95,53 @@ public class BookService implements ServiceBook {
         bookRepository.deleteById(id);
     }
 
-
-
     @Override
-    public Page<Books> getBooksWithPagingAndSorting(Integer pageNo, Integer pageSize, String sortBy, String sortDir) {
+    public Page<BookModel> getBooksWithPagingAndSorting(Integer pageNo, Integer pageSize, String sortBy, String sortDir,String searchText,String authorName) {
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
         Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
 
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Books> query = cb.createQuery(Books.class);
         Root<Books> book = query.from(Books.class);
-
         List<Predicate> predicates = new ArrayList<>();
+
+        if (searchText != null && !searchText.isEmpty()) {
+            predicates.add(cb.like(cb.lower(book.get("bookName")),  searchText.toLowerCase() + "%"));
+        }
+
+        if(authorName != null && !authorName.isEmpty()){
+            predicates.add(cb.like(cb.lower(book.get("author")), authorName.toLowerCase()+"%"));
+        }
+
         query.where(predicates.toArray(new Predicate[0]));
+
         query.orderBy(sort.stream()
                 .map(order -> order.isAscending() ? cb.asc(book.get(order.getProperty())) : cb.desc(book.get(order.getProperty())))
                 .collect(Collectors.toList()));
 
+        // Execute the main query
         List<Books> books = entityManager.createQuery(query)
                 .setFirstResult((int) pageable.getOffset())
                 .setMaxResults(pageable.getPageSize())
                 .getResultList();
 
-        CriteriaQuery<Long> countQuery = cb.createQuery(Long.class);
-        Root<Books> bookCount = countQuery.from(Books.class);
-        countQuery.select(cb.count(bookCount)).where(predicates.toArray(new Predicate[0]));
-        Long count = entityManager.createQuery(countQuery).getSingleResult();
+        List<BookModel>bookModels =books.stream()
+                .map(bookMapper::toModel)
+                .collect(Collectors.toList());
 
-        return new PageImpl<>(books, pageable,count);
+        return new PageImpl<>(bookModels, pageable,bookModels.size());
     }
-}
+
+    @Override
+    public List<Books> searchBooks(String bookName) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Books> criteriaQuery = criteriaBuilder.createQuery(Books.class);
+        Root<Books> bookRoot = criteriaQuery.from(Books.class);           // The root of the query (the entity you are querying)
+        Predicate bookNamePredicate = criteriaBuilder.like(          // Create a Predicate for the condition "bookName LIKE %bookName%"
+                criteriaBuilder.lower(bookRoot.get("bookName")),
+                  bookName.toLowerCase() + "%"
+        );
+        criteriaQuery.where(bookNamePredicate);        // Apply the Predicate to the query
+        return entityManager.createQuery(criteriaQuery).getResultList();
+    }
+ }

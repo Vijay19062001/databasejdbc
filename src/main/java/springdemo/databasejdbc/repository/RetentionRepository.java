@@ -5,12 +5,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-
 import springdemo.databasejdbc.entities.Books;
 import springdemo.databasejdbc.entities.RetentionEntity;
-import springdemo.databasejdbc.enums.BookStatus;
 import springdemo.databasejdbc.enums.DBStatus;
-
 import java.time.LocalDate;
 import java.util.List;
 
