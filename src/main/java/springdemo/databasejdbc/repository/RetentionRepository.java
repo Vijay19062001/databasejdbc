@@ -8,6 +8,8 @@ import org.springframework.stereotype.Repository;
 import springdemo.databasejdbc.entities.Books;
 import springdemo.databasejdbc.entities.RetentionEntity;
 import springdemo.databasejdbc.enums.DBStatus;
+import springdemo.databasejdbc.model.RetentionModel;
+
 import java.time.LocalDate;
 import java.util.List;
 
@@ -18,4 +20,8 @@ public interface RetentionRepository extends JpaRepository<RetentionEntity, Inte
     List<RetentionEntity>findByDbStatus(DBStatus dbStatus);
     List<RetentionEntity> findByBookAndBorrowDateBetween(Books book, LocalDate borrowDate, LocalDate returnDate);
     Page<RetentionEntity> findAll(Pageable pageable);
+
+    List<RetentionEntity> findByBookId(int id);
+
+    RetentionEntity save(RetentionModel retentionModel);
 }

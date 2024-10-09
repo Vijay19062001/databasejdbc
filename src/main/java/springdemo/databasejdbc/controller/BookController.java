@@ -2,6 +2,7 @@ package springdemo.databasejdbc.controller;
 
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,6 +10,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import springdemo.databasejdbc.exception.basicexception.BasicValidationException;
 import springdemo.databasejdbc.exception.basicexception.BookNotFoundException;
+import springdemo.databasejdbc.exception.basicexception.EmailSendException;
 import springdemo.databasejdbc.model.BookModel;
 
 import springdemo.databasejdbc.service.servicesimpl.BookService;
@@ -20,8 +22,12 @@ import java.util.List;
 @Validated
 public class BookController {
 
+    private final BookService bookService;
+
     @Autowired
-    private BookService bookService;
+    public BookController(@Lazy  BookService bookService) {
+        this.bookService = bookService;
+    }
 
     @GetMapping("/all")
     @ResponseStatus(HttpStatus.OK)
@@ -90,9 +96,23 @@ public class BookController {
         sortBy = (sortBy != null) ? sortBy : "id";
         sortDir = (sortDir != null) ? sortDir : "asc";
 
-        Page<BookModel> bookPage = bookService.getBooksWithPagingAndSorting(pageNo, pageSize, sortBy, sortDir, searchText,authorName);
+        Page<BookModel> bookPage = bookService.getBooksWithPagingAndSorting(pageNo, pageSize, sortBy, sortDir, searchText, authorName);
         return new ResponseEntity<>(bookPage, HttpStatus.OK);
 
+    }
+
+    @PostMapping("/{id}/send-retention-email")
+    public ResponseEntity<String> sendRetentionEmail(@PathVariable int id) {
+        try {
+            bookService.sendBookRetentionEmail(id);  // Call the service method to send the email
+            return ResponseEntity.status(HttpStatus.OK).body("Retention email sent successfully for book ID: " + id);
+        } catch (BookNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (EmailSendException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred.");
+        }
     }
 
 }

@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import springdemo.databasejdbc.entities.Books;
 import springdemo.databasejdbc.entities.RetentionEntity;
+import springdemo.databasejdbc.entities.Users;
 import springdemo.databasejdbc.enums.BookStatus;
 import springdemo.databasejdbc.enums.DBStatus;
 import springdemo.databasejdbc.enums.RetentionStatus;
@@ -12,50 +13,56 @@ import springdemo.databasejdbc.mapper.RetentionMapper;
 import springdemo.databasejdbc.model.RetentionModel;
 import springdemo.databasejdbc.repository.BookRepository;
 import springdemo.databasejdbc.repository.RetentionRepository;
+import springdemo.databasejdbc.repository.UserRepository;
 import springdemo.databasejdbc.service.ServiceRetention;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class RetentionService implements ServiceRetention {
 
-    @Autowired
-    private RetentionRepository retentionRepository;
+    private final RetentionRepository retentionRepository;
+    private final BookRepository bookRepository;
+    private final RetentionMapper retentionMapper;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private BookRepository bookRepository;
+    @Autowired // This is optional for a single constructor in Spring 4.3+
+    public RetentionService(RetentionRepository retentionRepository,
+                            BookRepository bookRepository,
+                            RetentionMapper retentionMapper,
+                            UserRepository userRepository) {
+        this.retentionRepository = retentionRepository;
+        this.bookRepository = bookRepository;
+        this.retentionMapper = retentionMapper;
+        this.userRepository = userRepository;
+    }
 
-    @Autowired
-    private RetentionMapper retentionMapper;
 
 
     @Override
-    public RetentionModel createRetention(RetentionModel retentionModel) {
-        RetentionEntity retentionEntity;
-
-        if (retentionModel.getBookId() != null && !retentionModel.getBookId().isEmpty()) {
-            try {
-                Long bookId = Long.valueOf(retentionModel.getBookId());
-                Books book = bookRepository.findByIdAndStatus(bookId, BookStatus.ACTIVE);
-
-                if (book == null) {
-                    throw new BookNotFoundException("Book with id " + bookId + " not found or not active");
-                }
-
-                retentionEntity = retentionMapper.toEntity(retentionModel, book);
-            } catch (NumberFormatException e) {
-                throw new IllegalArgumentException("Invalid book ID format: " + retentionModel.getBookId(), e);
-            }
-        } else {
-
-            retentionEntity = retentionMapper.toEntity(retentionModel, null);
+    public RetentionModel createRetention(RetentionModel retentionModel, Integer userId) {
+        // Fetch the user based on userId
+        List<Users> users = userRepository.findByUserId(userId);
+        if (users.isEmpty()) {
+            throw new IllegalArgumentException("User not found with id: " + userId);
         }
 
-        RetentionEntity saved = retentionRepository.save(retentionEntity);
-        return retentionMapper.toModel(saved);
+        // Fetch the book entity from the database
+        Books book = bookRepository.findById(Long.valueOf(retentionModel.getBookId()))
+                .orElseThrow(() -> new IllegalArgumentException("Book not found with id: " + retentionModel.getBookId()));
+
+        // Map the RetentionModel to RetentionEntity
+        RetentionEntity retentionEntity = retentionMapper.toEntity(retentionModel, users.get(0), book);
+
+        // Save retention entity
+        RetentionEntity savedRetentionEntity = retentionRepository.save(retentionEntity);
+
+        // Return the mapped model
+        return retentionMapper.toModel(savedRetentionEntity);
     }
 
 
@@ -98,7 +105,6 @@ public class RetentionService implements ServiceRetention {
                 .map(retentionMapper::toModel)
                 .collect(Collectors.toList());
     }
-
 
 
     @Override

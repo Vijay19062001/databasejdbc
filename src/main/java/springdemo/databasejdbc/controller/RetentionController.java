@@ -4,6 +4,8 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import springdemo.databasejdbc.entities.Books;
+import springdemo.databasejdbc.entities.Users;
 import springdemo.databasejdbc.exception.basicexception.BookNotFoundException;
 import springdemo.databasejdbc.model.RetentionModel;
 import springdemo.databasejdbc.service.servicesimpl.RetentionService;
@@ -16,17 +18,26 @@ import java.util.List;
 //@Validated
 public class RetentionController {
 
+    private  RetentionService retentionService;
+
     @Autowired
-    private RetentionService retentionService;
+    public RetentionController(RetentionService retentionService) {
+        this.retentionService = retentionService;
+    }
 
 
     @PostMapping("/add")
-    @ResponseStatus(HttpStatus.CREATED) // Set status to 201 Created
-    public  RetentionModel createRetention(@Valid @RequestBody  RetentionModel retentionModel) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public RetentionModel createRetention(
+            @Valid @RequestBody RetentionModel retentionModel) {
 
-        return retentionService.createRetention(retentionModel);
+        // Extract userId from the retentionModel
+        Integer userId = Integer.parseInt(retentionModel.getUserId());
 
+        return retentionService.createRetention(retentionModel, userId);
     }
+
+
 
 
     // Get a single retention record by ID

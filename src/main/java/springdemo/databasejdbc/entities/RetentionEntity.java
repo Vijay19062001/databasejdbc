@@ -16,7 +16,6 @@ public class RetentionEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-
     @Column(name = "name", nullable = false)
     private String name;
 
@@ -40,12 +39,14 @@ public class RetentionEntity {
     @Column(name = "db_status",nullable = false)
     private DBStatus dbStatus;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "book_id",nullable = false)
     private Books book;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id",nullable = false)
+    private Users users;
 
-    // Constructors, getters, and setters
     public RetentionEntity() {}
 
     public RetentionEntity( String name, LocalDate borrowDate, LocalDate returnDate, RetentionStatus returns,DBStatus dbStatus) {
@@ -132,6 +133,15 @@ public class RetentionEntity {
     public void setId(int id) {
         this.id = id;
     }
+
+    public Users getUsers() {
+        return users;
+    }
+
+    public void setUsers(Users users) {
+        this.users = users;
+    }
+
 
 
 }

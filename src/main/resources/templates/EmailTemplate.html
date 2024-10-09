@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title th:text="${subject}">Email Template</title>
+    <style>
+        body {
+            font-family: Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f6a4e2;
+        }
+        .container {
+            font-size: 16px;
+            width: 70%;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f7f8f8;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            border-bottom: 1px solid #eee;
+            padding-bottom: 20px;
+            margin-bottom: 20px;
+            background-color:#f6a4e2;
+        }
+        .brand {
+            font-size: 1.5em;
+            color: Black !important;
+            text-decoration: none;
+            font-weight: 800;
+        }
+        p {
+            margin-bottom: 15px;
+        }
+        .footer {
+            color: #0e1313;
+            font-size: 0.8em;
+            font-weight: 300;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <a href="#" class="brand">Books Management Notification</a>
+    </div>
+    <h3>Hello, <span th:text="${userName}"></span>!</h3>
+    <p>You have the following book retention notification:</p>
+    <p><strong>Book Name:</strong> <span th:text="${bookName}"></span></p>
+    <p><strong>Prices:</strong> <span th:text="${prices}"></span></p>
+
+<table border="1">
+    <thead>
+    <tr>
+        <th>Borrow Date</th>
+        <th>Return Date</th>
+        <th>RetentionStatus</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="retentionEntities : ${retentionEntities}">
+        <td th:text="${retentionEntities.borrowDate}"></td>
+        <td th:text="${retentionEntities.returnDate}"></td>
+        <td th:text="${retentionEntities.returns}"></td>
+    </tr>
+    </tbody>
+</table>
+    <div class="footer">
+    <p>Thank You</p>
+    <p> CNX Books Team.</p>
+  </div>
+</div>
+</body>
+</html>

@@ -15,7 +15,6 @@ import java.time.LocalDate;
 public class BookMapper {
 
 
-
     public Books toEntity(BookModel bookModel) throws InvalidDateFormatException {
         Books book = new Books();
 
@@ -25,22 +24,15 @@ public class BookMapper {
         LocalDate publishDate = DateUtils.stringToLocalDate(String.valueOf(bookModel.getPublishDate()));
         book.setPublishDate(LocalDate.parse(String.valueOf(publishDate)));
         book.setPublishDate(LocalDate.parse(String.valueOf(LocalDate.from(publishDate))));
-
         book.setPrices(Double.valueOf(bookModel.getPrices()));
         book.setPublisherCompany(bookModel.getPublisherCompany());
-
         LocalDate createdDate = DateUtils.stringToLocalDate(String.valueOf(bookModel.getCreatedDate()));
         book.setCreatedDate(LocalDate.parse(String.valueOf(createdDate)));
         book.setCreatedDate(LocalDate.parse(String.valueOf(LocalDate.from(createdDate))));
-
         LocalDate updatedDate = DateUtils.stringToLocalDate(String.valueOf(bookModel.getUpdatedDate()));
         book.setUpdatedDate(LocalDate.parse(String.valueOf(updatedDate)));
         book.setUpdatedDate(LocalDate.parse(String.valueOf(LocalDate.from(updatedDate))));
-
-        book.setPublishMonth(bookModel.getPublishMonth());
         book.setStatus(BookStatus.valueOf(bookModel.getStatus().toUpperCase()));
-
-
         return book;
     }
 
@@ -57,7 +49,6 @@ public class BookMapper {
         bookModel.setCreatedDate(formattedCreatedDate);
         String formattedUpdatedDate = DateUtils.localDateToString(book.getUpdatedDate());
         bookModel.setUpdatedDate(formattedUpdatedDate);
-        bookModel.setPublishMonth(String.valueOf(book.getPublishMonth()));
 
         return bookModel;
     }

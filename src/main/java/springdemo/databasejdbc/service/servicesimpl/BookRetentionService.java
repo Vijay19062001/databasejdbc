@@ -18,21 +18,23 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+
 @Service
 public class BookRetentionService implements ServiceBookRetention {
 
-    @Autowired
-    private BookRepository bookRepository;
+    private final BookRepository bookRepository;
+    private final RetentionMapper retentionMapper;
+    private final RetentionRepository retentionRepository;
 
+    // Constructor injection
     @Autowired
-    private BookMapper bookMapper;
-
-    @Autowired
-    private RetentionMapper retentionMapper;
-
-    @Autowired
-    private RetentionRepository retentionRepository;
-
+    public BookRetentionService(BookRepository bookRepository,
+                                RetentionMapper retentionMapper,
+                                RetentionRepository retentionRepository) {
+        this.bookRepository = bookRepository;
+        this.retentionMapper = retentionMapper;
+        this.retentionRepository = retentionRepository;
+    }
 
     @Override
     public List<BookRetentionModel> getBooksWithRetentions(Long id) {

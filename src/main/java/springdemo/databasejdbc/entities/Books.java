@@ -1,11 +1,7 @@
 package springdemo.databasejdbc.entities;
 
-
 import jakarta.persistence.*;
-
 import java.time.LocalDate;
-import java.util.List;
-
 import springdemo.databasejdbc.enums.BookStatus;
 
 @Entity
@@ -42,12 +38,6 @@ public class Books {
     @Column(name = "status")
     private BookStatus status;
 
-    @Transient
-    public String publishMonth;        // To store the month, transient so it's not stored in the DB
-
-
-
-
     // Constructors, getters, and setters
     public Books() {
     }
@@ -60,7 +50,6 @@ public class Books {
         this.publisherCompany = publisherCompany;
         this.status = status;
     }
-
 
     public String getBookName() {
         return bookName;
@@ -111,12 +100,6 @@ public class Books {
     }
 
 
-    public void setPublishMonth(String publishMonth) {
-
-        this.publishMonth = publishMonth;
-    }
-
-
     public long getId() {
         return id;
     }
@@ -124,8 +107,6 @@ public class Books {
     public void setId(long id) {
         this.id = id;
     }
-
-
 
     public LocalDate getCreatedDate() {
         return createdDate;
@@ -142,18 +123,5 @@ public class Books {
     public void setUpdatedDate(LocalDate updatedDate) {
         this.updatedDate = updatedDate;
     }
-
-
-    public int getPublishMonth() {
-
-        if (publishDate != null) {
-            return publishDate.getMonthValue();
-        } else {
-            return Integer.parseInt((null));
-        }
-
-
-    }
-
 
 }

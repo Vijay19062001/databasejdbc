@@ -1,6 +1,5 @@
 package springdemo.databasejdbc.model;
 
-
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -33,18 +32,13 @@ public class BookModel {
     @Pattern(regexp = "^(ACTIVE|active|INACTIVE|inactive)$", message = "Status must be either 'ACTIVE' or 'INACTIVE'.")
     private String status;
 
+    @NotNull
+    @Pattern(regexp = "^\\d{4}\\d{2}\\d{2}$", message = "Created date must be in the format YYYY-MM-DD.")
     private String createdDate;
+
+    @NotNull
+    @Pattern(regexp = "^\\d{4}\\d{2}\\d{2}$", message = "Updated date must be in the format YYYY-MM-DD.")
     private String updatedDate;
-    private String publishMonth;
-
-
-    public void setPublishMonth(String publishMonth) {
-        this.publishMonth = publishMonth;
-    }
-    public String getPublishMonth(){
-        return publishMonth;
-    }
-
 
     public String getBookName() {
         return bookName;
@@ -109,5 +103,6 @@ public class BookModel {
     public void setCreatedDate(String createdDate) {
         this.createdDate = createdDate;
     }
+
 
 }
