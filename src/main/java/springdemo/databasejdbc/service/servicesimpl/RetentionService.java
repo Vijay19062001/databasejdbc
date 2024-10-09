@@ -16,6 +16,7 @@ import springdemo.databasejdbc.repository.RetentionRepository;
 import springdemo.databasejdbc.repository.UserRepository;
 import springdemo.databasejdbc.service.ServiceRetention;
 import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
@@ -29,16 +30,18 @@ public class RetentionService implements ServiceRetention {
     private final BookRepository bookRepository;
     private final RetentionMapper retentionMapper;
     private final UserRepository userRepository;
+    private final AuditService auditService;
 
     @Autowired // This is optional for a single constructor in Spring 4.3+
     public RetentionService(RetentionRepository retentionRepository,
                             BookRepository bookRepository,
                             RetentionMapper retentionMapper,
-                            UserRepository userRepository) {
+                            UserRepository userRepository, AuditService auditService) {
         this.retentionRepository = retentionRepository;
         this.bookRepository = bookRepository;
         this.retentionMapper = retentionMapper;
         this.userRepository = userRepository;
+        this.auditService = auditService;
     }
 
 
@@ -60,6 +63,13 @@ public class RetentionService implements ServiceRetention {
 
         // Save retention entity
         RetentionEntity savedRetentionEntity = retentionRepository.save(retentionEntity);
+
+        auditService.AuditLog(
+                retentionEntity .getName(),
+                "API Book Creation",
+                "Created Successfully",
+                ZonedDateTime.now()
+        );
 
         // Return the mapped model
         return retentionMapper.toModel(savedRetentionEntity);

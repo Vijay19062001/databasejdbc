@@ -15,7 +15,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/retention")
-//@Validated
 public class RetentionController {
 
     private  RetentionService retentionService;
@@ -31,16 +30,12 @@ public class RetentionController {
     public RetentionModel createRetention(
             @Valid @RequestBody RetentionModel retentionModel) {
 
-        // Extract userId from the retentionModel
         Integer userId = Integer.parseInt(retentionModel.getUserId());
 
         return retentionService.createRetention(retentionModel, userId);
     }
 
 
-
-
-    // Get a single retention record by ID
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK) // Set status to 200 OK
     public RetentionModel getRetentionById(@PathVariable int id) {
@@ -50,7 +45,6 @@ public class RetentionController {
         }
         return retention;
     }
-
 
     @GetMapping("/all")
     @ResponseStatus(HttpStatus.OK)

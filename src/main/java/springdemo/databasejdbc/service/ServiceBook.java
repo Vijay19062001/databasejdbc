@@ -2,6 +2,7 @@ package springdemo.databasejdbc.service;
 
 import org.springframework.data.domain.Page;
 import springdemo.databasejdbc.entities.Books;
+import springdemo.databasejdbc.entities.RetentionEntity;
 import springdemo.databasejdbc.entities.Users;
 import springdemo.databasejdbc.model.BookModel;
 import springdemo.databasejdbc.model.UserModel;
@@ -12,7 +13,7 @@ public interface ServiceBook {
 
      List<BookModel> getAllBooks();
      BookModel getBookById(Long id);
-     BookModel createBook(BookModel bookModel);
+     public BookModel createBook(BookModel bookModel, RetentionEntity retentionEntity) ;
      BookModel updateBook(Long id, BookModel bookModel);
      void deleteBook(Long id);
      Page<BookModel> getBooksWithPagingAndSorting(Integer pageNo, Integer pageSize, String sortBy, String sortDir,String searchText,String authorName) ;

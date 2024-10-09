@@ -21,14 +21,19 @@ import org.thymeleaf.spring6.SpringTemplateEngine;
 import springdemo.databasejdbc.entities.Books;
 import springdemo.databasejdbc.entities.RetentionEntity;
 import springdemo.databasejdbc.entities.Users;
+import springdemo.databasejdbc.exception.basicexception.BasicValidationException;
 import springdemo.databasejdbc.exception.basicexception.BookNotFoundException;
 import springdemo.databasejdbc.mapper.BookMapper;
+import springdemo.databasejdbc.mapper.UserMapper;
 import springdemo.databasejdbc.model.BookModel;
+import springdemo.databasejdbc.model.UserModel;
 import springdemo.databasejdbc.repository.BookRepository;
 import springdemo.databasejdbc.repository.RetentionRepository;
 import springdemo.databasejdbc.repository.UserRepository;
 import springdemo.databasejdbc.service.ServiceBook;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.*;
@@ -48,16 +53,9 @@ public class BookService implements ServiceBook{
     private final JavaMailSender mailSender;
     private final SpringTemplateEngine templateEngine;
 
-    private static final Logger logger = LoggerFactory.getLogger(BookService.class);
 
     @Autowired
-    public BookService(BookRepository bookRepository,
-                       BookMapper bookMapper,
-                       RetentionRepository retentionRepository,
-                       UserRepository userRepository,
-                       EntityManager entityManager,
-                       JavaMailSender mailSender,
-                       SpringTemplateEngine templateEngine) {
+    public BookService(BookRepository bookRepository, BookMapper bookMapper, RetentionRepository retentionRepository, UserRepository userRepository, EntityManager entityManager, JavaMailSender mailSender, SpringTemplateEngine templateEngine, AuditService auditService) {
         this.bookRepository = bookRepository;
         this.bookMapper = bookMapper;
         this.retentionRepository = retentionRepository;
@@ -65,7 +63,13 @@ public class BookService implements ServiceBook{
         this.entityManager = entityManager;
         this.mailSender = mailSender;
         this.templateEngine = templateEngine;
+        this.auditService = auditService;
     }
+
+    private final AuditService auditService;
+
+
+    private static final Logger logger = LoggerFactory.getLogger(BookService.class);
 
 
     @Override
@@ -73,6 +77,7 @@ public class BookService implements ServiceBook{
         return bookRepository.findAll().stream()
                 .map(bookMapper::toModel)
                 .collect(Collectors.toList());
+
     }
 
 
@@ -84,12 +89,24 @@ public class BookService implements ServiceBook{
     }
 
     @Override
-    public BookModel createBook(BookModel bookModel) {
-        Books book = bookMapper.toEntity(bookModel);
-        Books saved = bookRepository.save(book);
+    public BookModel createBook(BookModel bookModel,RetentionEntity retentionEntity) {
 
-        return bookMapper.toModel(saved);
+            Books book = bookMapper.toEntity(bookModel);
+
+            Books saved = bookRepository.save(book);
+
+            auditService.AuditLog(
+                   retentionEntity .getName(),
+                    "API Book Creation",
+                    "Created Successfully",
+                    ZonedDateTime.now()
+            );
+
+            return bookMapper.toModel(saved);
+
+
     }
+
 
     @Override
     public BookModel updateBook(Long id, BookModel bookModel) {

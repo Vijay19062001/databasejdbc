@@ -8,11 +8,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import springdemo.databasejdbc.entities.RetentionEntity;
 import springdemo.databasejdbc.exception.basicexception.BasicValidationException;
 import springdemo.databasejdbc.exception.basicexception.BookNotFoundException;
 import springdemo.databasejdbc.exception.basicexception.EmailSendException;
 import springdemo.databasejdbc.model.BookModel;
 
+import springdemo.databasejdbc.model.UserModel;
 import springdemo.databasejdbc.service.servicesimpl.BookService;
 
 import java.util.List;
@@ -49,14 +51,14 @@ public class BookController {
 
     @PostMapping("/add")
     @ResponseStatus(HttpStatus.CREATED) // Set status to 201 Created
-    public BookModel createBook(@Valid @RequestBody BookModel bookModel) throws BasicValidationException {
-        return bookService.createBook(bookModel);
+    public BookModel createBook(@Valid @RequestBody BookModel bookModel, RetentionEntity retentionEntity) throws BasicValidationException {
+        return bookService.createBook(bookModel,retentionEntity);
     }
 
     // Update an existing book by ID
     @PutMapping("/update/{id}")
     @ResponseStatus(HttpStatus.OK) // Set status to 200 OK for successful updates
-    public BookModel updateBook(@PathVariable Long id, @Valid @RequestBody BookModel bookModel) throws BasicValidationException {
+    public BookModel updateBook(@PathVariable Long id, @Valid @RequestBody BookModel bookModel ) throws BasicValidationException {
 
         BookModel updatedBook = bookService.updateBook(id, bookModel);
 
