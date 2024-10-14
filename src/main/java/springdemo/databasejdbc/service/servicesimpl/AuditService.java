@@ -22,11 +22,11 @@ public class AuditService implements ServiceLog {
     }
 
     @Override
-    public void AuditLog(String userName, String apiName, String status, ZonedDateTime timeStamp) {
+    public void AuditLog(String userName, String apiName, String errors, ZonedDateTime timeStamp) {
         AuditLog log = new AuditLog();
         log.setUserName(userName);
         log.setName(apiName);
-        log.setErrors(status); // Assuming 'errors' was meant to store the status message
+        log.setErrors(errors);
         log.setTimeStamp(LocalDateTime.from(timeStamp)); // Use the provided timeStamp
         auditLogRepository.save(log);
     }

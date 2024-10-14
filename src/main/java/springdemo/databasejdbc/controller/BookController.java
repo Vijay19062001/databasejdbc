@@ -13,10 +13,7 @@ import springdemo.databasejdbc.exception.basicexception.BasicValidationException
 import springdemo.databasejdbc.exception.basicexception.BookNotFoundException;
 import springdemo.databasejdbc.exception.basicexception.EmailSendException;
 import springdemo.databasejdbc.model.BookModel;
-
-import springdemo.databasejdbc.model.UserModel;
 import springdemo.databasejdbc.service.servicesimpl.BookService;
-
 import java.util.List;
 
 @RestController
@@ -34,7 +31,7 @@ public class BookController {
     @GetMapping("/all")
     @ResponseStatus(HttpStatus.OK)
     public List<BookModel> getAllBooks() {
-        return bookService.getAllBooks(); // Return list of books directly
+        return bookService.getAllBooks();
     }
 
     @GetMapping("/{id}")

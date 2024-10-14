@@ -12,8 +12,6 @@ import org.springframework.web.bind.annotation.*;
 import springdemo.databasejdbc.model.BookRetentionModel;
 import springdemo.databasejdbc.model.RetentionModel;
 import springdemo.databasejdbc.service.servicesimpl.BookRetentionService;
-import springdemo.databasejdbc.service.servicesimpl.BookService;
-import springdemo.databasejdbc.service.servicesimpl.RetentionService;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -23,7 +21,6 @@ import java.util.List;
 public class BookRetentionController {
 
     private final BookRetentionService bookRetentionService;
-
 
     @Autowired
     public BookRetentionController(BookRetentionService bookRetentionService) {
